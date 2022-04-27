@@ -1,0 +1,63 @@
+title User orders elevator from 1st to 3rd floor
+
+participant hardwareIO
+participant distributor
+
+participant fsm
+participant timer
+
+participant network
+participant system
+
+note over hardwareIO: The user orders the elevator to the 1st floor
+hardwareIO->distributor:runHardware()
+distributor->distributor: orderDistributor()
+distributor->distributor: getDesignatedElevator()
+distributor->network: sendOrder()
+network->network: runNetworking()
+network->network: runOrderTimer()
+distributor->timer: sendOrder()
+timer->timer:runOrderTimer()
+distributor->fsm: sendOrder()
+fsm->hardwareIO: elevatorFsm()
+hardwareIO->fsm:setButtonLamp() 
+network->fsm:ordersNet()
+fsm->hardwareIO: elevatorFsm()
+hardwareIO->fsm: setMotorDirection()
+note over hardwareIO: The elevator reaches 1st floor to get the user
+
+hardwareIO->fsm:runHardware()
+fsm->hardwareIO: elevatorFsm()
+hardwareIO-->fsm:setFloorIndicator()
+hardwareIO-->fsm:setDoorOpenLamp()
+hardwareIO-->fsm:setButtonLamp()
+fsm->hardwareIO:setAllButtonLights()
+hardwareIO->fsm: setButtonLamp()
+fsm->timer: elevatorFsm()
+timer->timer:runDoorTimer()
+fsm->hardwareIO: elevatorFsm()
+hardwareIO->fsm: setMotorDirection()
+
+note over hardwareIO: User has gotten inside elevator and orders to 3rd floor
+
+hardwareIO->fsm: runHardware() 
+fsm->hardwareIO: elevatorFsm() 
+hardwareIO->fsm: setButtonLamp() 
+fsm->hardwareIO: chooseDirection() 
+hardwareIO->fsm: setMotorDirection() 
+
+note over hardwareIO: User arrives at 3rd floor
+
+hardwareIO->fsm: runHardware() 
+fsm->hardwareIO: elevatorFsm() 
+hardwareIO-->fsm: setMotorDirection() 
+hardwareIO-->fsm: setDoorOpenLamp()
+hardwareIO -->fsm: setFloorIndicator() 
+fsm->hardwareIO: setAllButtonLights() 
+hardwareIO->fsm: setButtonLamp() 
+
+fsm->distributor: elevatorFsm() 
+distributor->system: orderDistributor() 
+system->distributor:logSystem() 
+system->timer: logSystem() 
+timer->timer: runOrderTimer() 

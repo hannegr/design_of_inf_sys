@@ -1,0 +1,59 @@
+title User orders elevator from 4th to 2nd floor
+
+participant hardwareIO
+participant distributor
+
+participant fsm
+participant timer
+
+participant network
+participant system
+
+note over hardwareIO: The user orders the elevator to the 2st floor
+hardwareIO->distributor:runHardware()
+distributor->distributor: orderDistributor()
+distributor->distributor: getDesignatedElevatorId()
+distributor->network:sendOrder() 
+network->network: runNetworking() 
+network->network:ordersNet() 
+distributor->timer: sendOrder()
+
+note over timer: received no message before timer timed out
+timer->(3)distributor: runMessageTimer()
+distributor->distributor:orderDistributor() 
+distributor->distributor:getDesignatedElevatorId()
+
+note over distributor: getDesignatedElevatorId() finds that the other elevator has motorstop, so chooses own elevator 
+distributor->distributor: orderDistributor() 
+distributor->fsm:sendOrder() 
+distributor->network: sendOrder() 
+network->network: runNetworking() 
+network->network:ordersNet() 
+fsm->hardwareIO: elevatorFsm()
+hardwareIO->fsm: setButtonLamp() 
+fsm->hardwareIO: chooseMotorDirection() 
+hardwareIO->fsm: setMotorDirection()
+fsm->distributor: elevatorFsm() 
+distributor->system:orderDistributor() 
+system->distributor:logElevator() 
+distributor->hardwareIO:setAllHallLights() 
+hardwareIO->distributor: setButtonLamp() 
+
+note over hardwareIO: elevator arrives on 4th floor, floorsensor in HW notices 
+hardwareIO->fsm: runHardware() 
+fsm->hardwareIO: elevatorFsm() 
+hardwareIO->fsm: setButtonLamp() 
+fsm->timer:elevatorFsm() 
+timer->fsm: runDoorTimer() 
+
+note over hardwareIO: user gets inside of elevator, doors close, and user orders elevator to 2nd floor
+hardwareIO->fsm: runHardware() 
+fsm->hardwareIO: elevatorFsm() 
+hardwareIO->fsm: setButtonlamp()
+fsm->hardwareIO: chooseDirection() 
+hardwareIO->fsm: setMotorDirection() 
+
+
+
+
+
